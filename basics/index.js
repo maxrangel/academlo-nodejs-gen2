@@ -34,26 +34,30 @@ const server = http.createServer((request, response) => {
 			postData.push(chunk);
 		});
 
+		let newPost;
+
 		request.on('end', () => {
-			// id=1&title=New post&content=This is a new post
 			const parsedData = Buffer.concat(postData).toString();
-			console.log(parsedData);
 
 			// Split string by &
+			const [title, content] = parsedData.split('&'); // ['title=New post', 'content=This is a new post']
+
 			// Extract title and content value
+			const titleValue = title.split('=')[1]; // ['title', 'New post']
+			const contentValue = content.split('=')[1];
+
 			// Create new post (pass the title and the content)
-			// Send the new post to the client
+			newPost = {
+				id: Math.floor(Math.random() * 1000),
+				title: titleValue,
+				content: contentValue,
+			};
+
+			posts.push(newPost);
 		});
 
-		const newPost = {
-			id: Math.floor(Math.random() * 1000),
-			title: 'New post',
-			content: 'This is a new post',
-		};
-
-		posts.push(newPost);
-
-		response.write('A new post has been added');
+		// Send the new post to the client
+		response.write(JSON.stringify(posts));
 	} else if (method === 'GET' && url.includes('/posts') && hasId) {
 		const postId = url.slice(paramsIndex + 1);
 
