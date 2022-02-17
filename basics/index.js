@@ -14,8 +14,8 @@ const posts = [
 
 // Create HTTP server
 const server = http.createServer((request, response) => {
-	const url = request.url;
-	const method = request.method;
+	const url = request.url; // eg. /posts
+	const method = request.method; // GET POST PUT PATCH
 	const paramsIndex = url.lastIndexOf('/');
 	const hasId = paramsIndex > 0;
 
@@ -27,7 +27,7 @@ const server = http.createServer((request, response) => {
 	} else if (url === '/posts' && method === 'POST') {
 		// Save a new post
 
-		// title=New post&content=This is a new post -> Buffer
+		// ti tl e= Ne w  po st &c on te nt =T hi s  is  a  n ew  p os t -> Buffer
 		const postData = [];
 
 		request.on('data', chunk => {
