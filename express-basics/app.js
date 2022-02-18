@@ -18,6 +18,22 @@ const app = express();
 // Enable JSON incoming data
 app.use(express.json());
 
+const filterObj = (obj, ...allowedFields) => {
+	// allowedFields = ['title', 'content', 'author']
+	// obj = { title: 'New title', content: 'New content', email, comment }
+
+	const newObj = {};
+
+	// Get the obj properties [title, content, email, comment]
+	Object.keys(obj).forEach(el => {
+		if (allowedFields.includes(el)) {
+			newObj[el] = obj[el];
+		}
+	});
+
+	return newObj;
+};
+
 // Endpoints
 // GET http://localhost:4000/users
 app.get('/users', (req, res) => {
@@ -122,22 +138,6 @@ app.put('/posts/:id', (req, res) => {
 // PATCH http://localhost:4000/posts/:id
 app.patch('/posts/:id', (req, res) => {
 	const { id } = req.params;
-
-	const filterObj = (obj, ...allowedFields) => {
-		// allowedFields = ['title', 'content', 'author']
-		// obj = { title: 'New title', content: 'New content', email, comment }
-
-		const newObj = {};
-
-		// Get the obj properties [title, content, email, comment]
-		Object.keys(obj).forEach(el => {
-			if (allowedFields.includes(el)) {
-				newObj[el] = obj[el];
-			}
-		});
-
-		return newObj;
-	};
 
 	const data = filterObj(req.body, 'title', 'content', 'author');
 
