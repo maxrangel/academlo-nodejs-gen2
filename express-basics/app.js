@@ -7,25 +7,21 @@ const users = [
 ];
 
 const posts = [
-	{ id: 1, title: 'Post 1', content: 'Some content' },
-	{ id: 2, title: 'Post 2', content: 'Some content 2' },
-	{ id: 3, title: 'Post 3', content: 'Some content 3' },
+	{ id: 1, title: 'Post 1', content: 'Some content', author: 'Max' },
+	{ id: 2, title: 'Post 2', content: 'Some content 2', author: 'John' },
+	{ id: 3, title: 'Post 3', content: 'Some content 3', author: 'Jill' },
 ];
 
 // Init express app
 const app = express();
 
+// Enable JSON incoming data
 app.use(express.json());
 
 // Endpoints
 // GET http://localhost:4000/users
 app.get('/users', (req, res) => {
-	res.status(200).json({
-		status: 'success',
-		data: {
-			users,
-		},
-	});
+	res.json({ status: 'success', data: { users } });
 });
 
 // GET http://localhost:4000/posts
@@ -77,6 +73,61 @@ app.post('/posts', (req, res) => {
 		data: { newPost },
 	});
 });
+
+// PUT http://localhost:4000/posts/:id
+app.put('/posts/:id', (req, res) => {
+	const { id } = req.params;
+	const { title, content, author } = req.body;
+
+	// Validate the data has some value
+	if (
+		!title ||
+		!content ||
+		!author ||
+		title.length === 0 ||
+		content.length === 0 ||
+		author.length === 0
+	) {
+		res.status(400).json({
+			status: 'error',
+			message: 'Must provide a title, content and the author for this reuqest',
+		});
+		return;
+	}
+
+	// Find post by id, and get the index
+	const postIndex = posts.findIndex(post => post.id === +id);
+
+	if (postIndex === -1) {
+		res.status(404).json({
+			status: 'error',
+			message: 'Cant update post, invalid ID',
+		});
+		return;
+	}
+
+	// Update post and save it in the list
+	const updatePost = posts[postIndex];
+
+	updatePost.title = title;
+	updatePost.content = content;
+	updatePost.author = author;
+
+	posts[postIndex] = updatePost;
+
+	// 204 - No content
+	res.status(204).json({ status: 'success' });
+});
+
+// PATCH http://localhost:4000/posts/:id
+app.patch('/posts/:id', (req, res) => {
+	const { id } = req.params;
+	const { title, content, author } = req.body;
+
+	res.status(204).json({ status: 'success' });
+});
+
+// DELETE http://localhost:4000/posts/:id
 
 app.listen(4000, () => {
 	console.log('Express app running');

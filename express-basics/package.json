@@ -1,16 +1,12 @@
 {
   "name": "express-basics",
   "version": "1.0.0",
-  "description": "This is a basic example with Express",
-  "main": "index.js",
+  "description": "",
+  "main": "app.js",
   "scripts": {
     "start": "nodemon app.js"
   },
-  "keywords": [
-    "nodejs",
-    "express"
-  ],
-  "author": "Maximiliano Urbina Rangel",
+  "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.3"
