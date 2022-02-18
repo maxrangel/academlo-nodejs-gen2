@@ -122,12 +122,64 @@ app.put('/posts/:id', (req, res) => {
 // PATCH http://localhost:4000/posts/:id
 app.patch('/posts/:id', (req, res) => {
 	const { id } = req.params;
-	const { title, content, author } = req.body;
+
+	const filterObj = (obj, ...allowedFields) => {
+		// allowedFields = ['title', 'content', 'author']
+		// obj = { title: 'New title', content: 'New content', email, comment }
+
+		const newObj = {};
+
+		// Get the obj properties [title, content, email, comment]
+		Object.keys(obj).forEach(el => {
+			if (allowedFields.includes(el)) {
+				newObj[el] = obj[el];
+			}
+		});
+
+		return newObj;
+	};
+
+	const data = filterObj(req.body, 'title', 'content', 'author');
+
+	const postIndex = posts.findIndex(post => post.id === +id);
+
+	if (postIndex === -1) {
+		res.status(404).json({
+			status: 'error',
+			message: 'Cant update post, invalid ID',
+		});
+		return;
+	}
+
+	let updatedPost = posts[postIndex];
+
+	updatedPost = { ...updatedPost, ...data };
+
+	posts[postIndex] = updatedPost;
 
 	res.status(204).json({ status: 'success' });
 });
 
 // DELETE http://localhost:4000/posts/:id
+app.delete('/posts/:id', (req, res) => {
+	const { id } = req.params;
+
+	// Find post index, by the given id
+	const postIndex = posts.findIndex(post => post.id === +id);
+
+	if (postIndex === -1) {
+		res.status(404).json({
+			status: 'error',
+			message: 'Cant delete post, invalid ID',
+		});
+		return;
+	}
+
+	// Use splice to delete post
+	posts.splice(postIndex, 1);
+
+	res.status(204).json({ status: 'success' });
+});
 
 app.listen(4000, () => {
 	console.log('Express app running');
