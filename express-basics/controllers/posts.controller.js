@@ -5,6 +5,7 @@ const posts = [
 	{ id: 1, title: 'Post 1', content: 'Some content', author: 'Max' },
 	{ id: 2, title: 'Post 2', content: 'Some content 2', author: 'John' },
 	{ id: 3, title: 'Post 3', content: 'Some content 3', author: 'Jill' },
+	{ id: 4, title: 'Superlongt', content: 'Some content 3', author: 'Jill' },
 ];
 
 // Get all posts
