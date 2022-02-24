@@ -1,9 +1,11 @@
 const express = require('express');
 
 // Routers
-// const postsRouter = require('./routes/posts.routes');
 const { postsRouter } = require('./routes/posts.routes');
-const { usersRouter } = require('./routes/users.routes')
+const { usersRouter } = require('./routes/users.routes');
+
+// Utils
+const { sequelize } = require('./util/database');
 
 // Init express app
 const app = express();
@@ -15,6 +17,11 @@ app.use(express.json());
 // http://localhost:4000/api/v1/posts
 app.use('/api/v1/posts', postsRouter);
 app.use('/api/v1/users', usersRouter);
+
+sequelize
+	.authenticate()
+	.then(() => console.log('Database authenticated'))
+	.catch(err => console.log(err));
 
 app.listen(4000, () => {
 	console.log('Express app running');
