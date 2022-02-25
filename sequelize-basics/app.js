@@ -23,6 +23,11 @@ sequelize
 	.then(() => console.log('Database authenticated'))
 	.catch(err => console.log(err));
 
+sequelize
+	.sync()
+	.then(() => console.log('Database synced'))
+	.catch(err => console.log(err));
+
 app.listen(4000, () => {
 	console.log('Express app running');
 });
