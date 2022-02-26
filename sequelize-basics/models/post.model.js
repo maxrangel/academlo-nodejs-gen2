@@ -22,6 +22,12 @@ const Post = sequelize.define('post', {
 		type: DataTypes.STRING(100),
 		allowNull: false,
 	},
+	status: {
+		// active | deleted
+		type: DataTypes.STRING(10),
+		allowNull: false,
+		defaultValue: 'active',
+	},
 });
 
 module.exports = { Post };

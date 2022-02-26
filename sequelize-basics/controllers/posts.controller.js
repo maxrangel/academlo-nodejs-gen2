@@ -8,13 +8,13 @@ const { filterObj } = require('../util/filterObj');
 // export const getAllPosts
 exports.getAllPosts = async (req, res) => {
 	try {
-		// SELECT * FROM posts; -> posts[]
-		const postsDb = await Post.findAll();
+		// SELECT * FROM posts WHERE status = 'active'; -> posts[]
+		const posts = await Post.findAll({ where: { status: 'active' } });
 
 		res.status(200).json({
 			status: 'success',
 			data: {
-				posts: postsDb,
+				posts,
 			},
 		});
 	} catch (error) {
@@ -28,7 +28,12 @@ exports.getPostById = async (req, res) => {
 		const { id } = req.params;
 
 		// SELECT * FROM posts WHERE id = 1;
-		const post = await Post.findOne({ where: { id: id } });
+		const post = await Post.findOne({
+			where: {
+				id: id,
+				status: 'active',
+			},
+		});
 
 		if (!post) {
 			res.status(404).json({
@@ -93,7 +98,9 @@ exports.updatePostPut = async (req, res) => {
 			return;
 		}
 
-		const post = await Post.findOne({ where: { id: id } });
+		const post = await Post.findOne({
+			where: { id: id, status: 'active' },
+		});
 
 		if (!post) {
 			res.status(404).json({
@@ -122,7 +129,9 @@ exports.updatePostPatch = async (req, res) => {
 		const { id } = req.params;
 		const data = filterObj(req.body, 'title', 'content', 'author'); // { title } | { title, author } | { content }
 
-		const post = await Post.findOne({ where: { id: id } });
+		const post = await Post.findOne({
+			where: { id: id, status: 'active' },
+		});
 
 		if (!post) {
 			res.status(404).json({
@@ -132,7 +141,7 @@ exports.updatePostPatch = async (req, res) => {
 			return;
 		}
 
-		await post.update({ ...data }); // .update({ content })
+		await post.update({ ...data }); // .update({ title, author })
 
 		res.status(204).json({ status: 'success' });
 	} catch (error) {
@@ -145,7 +154,9 @@ exports.deletePost = async (req, res) => {
 	try {
 		const { id } = req.params;
 
-		const post = await Post.findOne({ where: { id: id } });
+		const post = await Post.findOne({
+			where: { id: id, status: 'active' },
+		});
 
 		if (!post) {
 			res.status(404).json({
@@ -156,7 +167,10 @@ exports.deletePost = async (req, res) => {
 		}
 
 		// DELETE FROM posts WHERE id = 1;
-		await post.destroy();
+		// await post.destroy();
+
+		// Soft delete
+		await post.update({ status: 'deleted' });
 
 		res.status(204).json({ status: 'success' });
 	} catch (error) {
