@@ -23,9 +23,9 @@ app.use('/api/v1/posts', postsRouter);
 app.use('/api/v1/users', usersRouter);
 
 sequelize
-	.authenticate()
-	.then(() => console.log('Database authenticated'))
-	.catch(err => console.log(err));
+  .authenticate()
+  .then(() => console.log('Database authenticated'))
+  .catch((err) => console.log(err));
 
 // Models relations
 // 1 User <----> M Post
@@ -33,12 +33,12 @@ User.hasMany(Post);
 Post.belongsTo(User);
 
 sequelize
-	.sync()
-	.then(() => console.log('Database synced'))
-	.catch(err => console.log(err));
+  .sync()
+  .then(() => console.log('Database synced'))
+  .catch((err) => console.log(err));
 
 app.listen(4000, () => {
-	console.log('Express app running');
+  console.log('Express app running');
 });
 
 // Http status codes examples:
