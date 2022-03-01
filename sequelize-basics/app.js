@@ -1,5 +1,9 @@
 const express = require('express');
 
+// Models
+const { Post } = require('./models/post.model');
+const { User } = require('./models/user.model');
+
 // Routers
 const { postsRouter } = require('./routes/posts.routes');
 const { usersRouter } = require('./routes/users.routes');
@@ -22,6 +26,11 @@ sequelize
 	.authenticate()
 	.then(() => console.log('Database authenticated'))
 	.catch(err => console.log(err));
+
+// Models relations
+// 1 User <----> M Post
+User.hasMany(Post);
+Post.belongsTo(User);
 
 sequelize
 	.sync()
