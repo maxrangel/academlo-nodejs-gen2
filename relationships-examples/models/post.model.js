@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 
 // Utils
-const { sequelize } = require('../util/database');
+const { sequelize } = require('../utils/database');
 
 const Post = sequelize.define('post', {
 	id: {

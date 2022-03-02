@@ -3,12 +3,12 @@ const express = require('express');
 // Controllers
 const {
 	createAddress,
-	getAddress,
+	getAddresses,
 } = require('../controllers/address.controller');
 
 const router = express.Router();
 
-router.get('/', getAddress);
+router.get('/', getAddresses);
 
 router.post('/', createAddress);
 
