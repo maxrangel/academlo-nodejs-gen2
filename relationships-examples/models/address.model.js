@@ -8,6 +8,10 @@ const Address = sequelize.define('address', {
 		allowNull: false,
 		autoIncrement: true,
 	},
+	street: {
+		type: DataTypes.STRING(100),
+		allowNull: false,
+	},
 	state: {
 		type: DataTypes.STRING(100),
 		allowNull: false,
