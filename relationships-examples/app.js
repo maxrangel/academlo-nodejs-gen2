@@ -3,6 +3,7 @@ const express = require('express');
 // Models
 const { User } = require('./models/user.model');
 const { Address } = require('./models/address.model');
+const { Post } = require('./models/post.model');
 
 // Routers
 const { userRouter } = require('./routes/users.routes');
@@ -28,9 +29,14 @@ sequelize
 // Step 1: Establish model relations
 
 // 1 User <---> 1 Address
-User.hasOne(Address);
+User.hasOne(Address); // user: { ..., address: { ..addressProps } }
 Address.belongsTo(User);
 
+// 1 User <---> M Posts
+User.hasMany(Post); // user: { ..., posts: [{}, {}, {}] }
+Post.belongsTo(User);
+
+// Examples on how to define different types of relations
 // 1 User <----> M Address
 // User.hasMany(Address)
 // Address.belongsTo(User)
@@ -38,8 +44,6 @@ Address.belongsTo(User);
 // M User <----> M Address
 // User.hasMany(Address)
 // Address.belongsToMany(User)
-
-// 1 User <---> M Posts
 
 sequelize
 	.sync()

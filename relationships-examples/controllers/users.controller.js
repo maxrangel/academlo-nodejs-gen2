@@ -1,8 +1,17 @@
 const { User } = require('../models/user.model');
+const { Address } = require('../models/address.model');
+const { Post } = require('../models/post.model');
 
 exports.getUsers = async (req, res) => {
 	try {
-		const users = await User.findAll();
+		// SELECT * FROM users
+		// JOIN address ON users.id = addresses.userId
+		// JOIN posts ON posts.userId = users.id
+
+		// Step 2: Use the attribute include
+		const users = await User.findAll({
+			include: [{ model: Address }, { model: Post }],
+		});
 
 		res.status(200).json({
 			status: 'success',

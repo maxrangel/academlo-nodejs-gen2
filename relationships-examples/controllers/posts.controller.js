@@ -30,14 +30,13 @@ exports.getPostById = async (req, res) => {
 
 exports.createPost = async (req, res) => {
 	try {
-		const { title, content } = req.body;
+		const { title, content, userId } = req.body;
 
-		// Missing userId
-		const newUser = await Post.create({ title, content });
+		const newPost = await Post.create({ title, content, userId });
 
 		res.status(201).json({
 			status: 'success',
-			data: { newUser },
+			data: { newPost },
 		});
 	} catch (error) {
 		console.log(error);

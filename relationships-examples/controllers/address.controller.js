@@ -1,8 +1,13 @@
 const { Address } = require('../models/address.model');
+const { User } = require('../models/user.model');
 
 exports.getAddresses = async (req, res) => {
 	try {
-		const addresses = await Address.findAll();
+		// SELECT * FROM addresses
+		// JOIN users ON users.id = addresses.userId
+		const addresses = await Address.findAll({
+			include: [{ model: User }],
+		});
 
 		res.status(200).json({
 			status: 'success',
@@ -15,10 +20,15 @@ exports.getAddresses = async (req, res) => {
 
 exports.createAddress = async (req, res) => {
 	try {
-		const { state, country, zipCode } = req.body;
+		const { street, state, country, zipCode, userId } = req.body;
 
-		// Missing userId
-		const newAddress = await Address.create({ state, country, zipCode });
+		const newAddress = await Address.create({
+			street,
+			state,
+			country,
+			zipCode,
+			userId,
+		});
 
 		res.status(201).json({
 			status: 'success',
