@@ -6,34 +6,36 @@ const { Comment } = require('../models/comment.model');
 // Utils
 const { filterObj } = require('../util/filterObj');
 
-// Get all users
-exports.getAllUsers = async (req, res) => {
-  try {
-    // Nested includes
-    const users = await User.findAll({
-      where: { status: 'active' },
-      include: [
-        {
-          model: Post,
-          include: [
-            {
-              model: Comment,
-              include: [{ model: User }]
-            }
-          ]
-        },
-        { model: Comment, include: [{ model: Post }] }
-      ]
-    });
-
-    res.status(200).json({
-      status: 'success',
-      data: { users }
-    });
-  } catch (error) {
-    console.log(error);
-  }
+const catchAsync = (fn) => {
+  return (req, res, next) => {
+    fn(req, res, next).catch(next);
+  };
 };
+
+// Get all users
+exports.getAllUsers = catchAsync(async (req, res, next) => {
+  // Nested includes
+  const users = await User.findAll({
+    where: { status: 'active' },
+    include: [
+      {
+        model: Post,
+        include: [
+          {
+            model: Comment,
+            include: [{ model: User }]
+          }
+        ]
+      },
+      { model: Comment, include: [{ model: Post }] }
+    ]
+  });
+
+  res.status(200).json({
+    status: 'success',
+    data: { users }
+  });
+});
 
 // Get user by ID
 exports.getUserById = async (req, res) => {
