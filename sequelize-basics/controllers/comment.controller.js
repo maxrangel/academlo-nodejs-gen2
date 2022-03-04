@@ -1,9 +1,16 @@
 // Models
+const { User } = require('../models/user.model');
 const { Comment } = require('../models/comment.model');
 
 exports.getAllComments = async (req, res) => {
   try {
-    const comments = await Comment.findAll({ where: { status: 'active' } });
+    // SELECT * FROM comments
+    // WHERE status = 'active'
+    // JOIN users ON comments.userId = users.id
+    const comments = await Comment.findAll({
+      where: { status: 'active' },
+      include: [{ model: User }]
+    });
 
     res.status(200).json({
       status: 'success',
@@ -51,7 +58,11 @@ exports.createComment = async (req, res) => {
       return;
     }
 
-    const newComment = await Comment.create({ text, postId, userId });
+    const newComment = await Comment.create({
+      text,
+      postId,
+      userId
+    });
 
     res.status(201).json({
       status: 'success',

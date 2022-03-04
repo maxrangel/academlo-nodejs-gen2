@@ -20,7 +20,6 @@ const app = express();
 app.use(express.json());
 
 // Endpoints
-// http://localhost:4000/api/v1/posts
 app.use('/api/v1/posts', postsRouter);
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/comments', commentsRouter);

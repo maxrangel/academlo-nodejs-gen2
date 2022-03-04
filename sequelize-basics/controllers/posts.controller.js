@@ -54,13 +54,13 @@ exports.getPostById = async (req, res) => {
 // Save post to database
 exports.createPost = async (req, res) => {
   try {
-    const { title, content, author } = req.body;
+    const { title, content, userId } = req.body;
 
-    // INSERT INTO posts (title, content, author) VALUES ('A new post', 'Saved in db', 'Max')
+    // INSERT INTO posts (title, content, userId) VALUES ('A new post', 'Saved in db', 1)
     const newPost = await Post.create({
       title: title, // dbColumn: valueToInsert
       content: content,
-      author: author
+      userId: userId
     });
 
     res.status(201).json({
