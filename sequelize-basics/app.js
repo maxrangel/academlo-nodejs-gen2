@@ -1,17 +1,9 @@
 const express = require('express');
 
-// Models
-const { Post } = require('./models/post.model');
-const { User } = require('./models/user.model');
-const { Comment } = require('./models/comment.model');
-
 // Routers
 const { postsRouter } = require('./routes/posts.routes');
 const { usersRouter } = require('./routes/users.routes');
 const { commentsRouter } = require('./routes/comment.routes');
-
-// Utils
-const { sequelize } = require('./util/database');
 
 // Init express app
 const app = express();
@@ -24,32 +16,13 @@ app.use('/api/v1/posts', postsRouter);
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/comments', commentsRouter);
 
-sequelize
-  .authenticate()
-  .then(() => console.log('Database authenticated'))
-  .catch((err) => console.log(err));
-
-// Models relations
-// 1 User <----> M Post
-User.hasMany(Post);
-Post.belongsTo(User);
-
-// 1 Post <---> M Comment
-Post.hasMany(Comment);
-Comment.belongsTo(Post);
-
-// 1 User <---> M Comment
-User.hasMany(Comment);
-Comment.belongsTo(User);
-
-sequelize
-  .sync()
-  .then(() => console.log('Database synced'))
-  .catch((err) => console.log(err));
-
-app.listen(4000, () => {
-  console.log('Express app running');
+app.use((err, req, res, next) => {
+  res.status(err.statusCode).json({
+    message: err.message
+  });
 });
+
+module.exports = { app };
 
 // Http status codes examples:
 // 2** -> success
