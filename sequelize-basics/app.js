@@ -1,9 +1,15 @@
 const express = require('express');
 
+// Controllers
+const { globalErrorHandler } = require('./controllers/error.controller');
+
 // Routers
 const { postsRouter } = require('./routes/posts.routes');
 const { usersRouter } = require('./routes/users.routes');
 const { commentsRouter } = require('./routes/comment.routes');
+
+// Utils
+const { AppError } = require('./util/appError');
 
 // Init express app
 const app = express();
@@ -16,11 +22,12 @@ app.use('/api/v1/posts', postsRouter);
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/comments', commentsRouter);
 
-app.use((err, req, res, next) => {
-  res.status(err.statusCode).json({
-    message: err.message
-  });
+app.use('*', (req, res, next) => {
+  next(new AppError(404, `${req.originalUrl} not found in this server.`));
 });
+
+// Error handler (err -> AppError)
+app.use(globalErrorHandler);
 
 module.exports = { app };
 

@@ -3,74 +3,66 @@ const { Post } = require('../models/post.model');
 
 // Utils
 const { filterObj } = require('../util/filterObj');
+const { catchAsync } = require('../util/catchAsync');
+const { AppError } = require('../util/appError');
 
 // Get all posts
 // export const getAllPosts
-exports.getAllPosts = async (req, res) => {
-  try {
-    // SELECT * FROM posts WHERE status = 'active'; -> posts[]
-    const posts = await Post.findAll({ where: { status: 'active' } });
+exports.getAllPosts = catchAsync(async (req, res, next) => {
+  // SELECT * FROM posts WHERE status = 'active'; -> posts[]
+  const posts = await Post.findAll({ where: { status: 'active' } });
 
-    res.status(200).json({
-      status: 'success',
-      data: {
-        posts
-      }
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
+  res.status(200).json({
+    status: 'success',
+    data: {
+      posts
+    }
+  });
+});
 
 // Get post by id
-exports.getPostById = async (req, res) => {
-  try {
-    const { id } = req.params;
+exports.getPostById = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
 
-    // SELECT * FROM posts WHERE id = 1;
-    const post = await Post.findOne({
-      where: { id: id, status: 'active' }
-    });
+  // SELECT * FROM posts WHERE id = 1;
+  const post = await Post.findOne({
+    where: { id: id, status: 'active' }
+  });
 
-    if (!post) {
-      res.status(404).json({
-        status: 'error',
-        message: 'No post found with the given ID'
-      });
-      return;
-    }
-
-    res.status(200).json({
-      status: 'success',
-      data: {
-        post
-      }
-    });
-  } catch (error) {
-    console.log(error);
+  if (!post) {
+    return next(new AppError(404, 'No post found with the given ID'));
   }
-};
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      post
+    }
+  });
+});
 
 // Save post to database
-exports.createPost = async (req, res) => {
-  try {
-    const { title, content, userId } = req.body;
+exports.createPost = catchAsync(async (req, res, next) => {
+  const { title, content, userId } = req.body;
 
-    // INSERT INTO posts (title, content, userId) VALUES ('A new post', 'Saved in db', 1)
-    const newPost = await Post.create({
-      title: title, // dbColumn: valueToInsert
-      content: content,
-      userId: userId
-    });
-
-    res.status(201).json({
-      status: 'success',
-      data: { newPost }
-    });
-  } catch (error) {
-    console.log(error);
+  if (!title || !content || !userId) {
+    return next(
+      new AppError(400, 'Must provide a valid title, content and userId')
+    );
   }
-};
+
+  // INSERT INTO posts (title, content, userId) VALUES ('A new post', 'Saved in db', 1)
+  const newPost = await Post.create({
+    title: title, // dbColumn: valueToInsert
+    content: content,
+    userId: userId
+  });
+
+  res.status(201).json({
+    status: 'success',
+    data: { newPost }
+  });
+});
 
 // Update post (put)
 exports.updatePostPut = async (req, res) => {
