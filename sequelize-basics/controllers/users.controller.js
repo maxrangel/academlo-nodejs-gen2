@@ -1,10 +1,11 @@
+const bcrypt = require('bcryptjs');
+
 // Models
 const { User } = require('../models/user.model');
 const { Post } = require('../models/post.model');
 const { Comment } = require('../models/comment.model');
 
 // Utils
-const { filterObj } = require('../util/filterObj');
 const { catchAsync } = require('../util/catchAsync');
 const { AppError } = require('../util/appError');
 
@@ -50,7 +51,7 @@ exports.getUserById = catchAsync(async (req, res, next) => {
 });
 
 // Save new user
-exports.createNewUser = catchAsync(async (req, res) => {
+exports.createNewUser = catchAsync(async (req, res, next) => {
   const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
@@ -59,15 +60,39 @@ exports.createNewUser = catchAsync(async (req, res) => {
     );
   }
 
-  // MUST ENCRYPT PASSWORD
+  const salt = await bcrypt.genSalt(12);
+
+  const hashedPassword = await bcrypt.hash(password, salt);
+
   const newUser = await User.create({
     name,
     email,
-    password
+    password: hashedPassword
   });
+
+  // Remove password from response
+  newUser.password = undefined;
 
   res.status(201).json({
     status: 'success',
     data: { newUser }
+  });
+});
+
+exports.loginUser = catchAsync(async (req, res, next) => {
+  const { email, password } = req.body;
+
+  // Find user given an email and has status active
+  const user = await User.findOne({
+    where: { email, status: 'active' }
+  });
+
+  // Compare entered password vs hashed password
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    return next(new AppError(400, 'Credentials are invalid'));
+  }
+
+  res.status(200).json({
+    status: 'success'
   });
 });
