@@ -8,13 +8,18 @@ const {
   loginUser
 } = require('../controllers/users.controller');
 
+// Middlewares
+const {
+  validateSession
+} = require('../middlewares/auth.middleware');
+
 const router = express.Router();
 
-router.get('/', getAllUsers);
+router.get('/', validateSession, getAllUsers);
 
-router.get('/:id', getUserById);
+router.get('/:id', validateSession, getUserById);
 
-router.post('/', createNewUser);
+router.post('/', validateSession, createNewUser);
 
 router.post('/login', loginUser);
 
