@@ -18,13 +18,19 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
   // Nested includes
   const users = await User.findAll({
     where: { status: 'active' },
+    attributes: { exclude: ['password'] },
     include: [
       {
         model: Post,
         include: [
           {
             model: Comment,
-            include: [{ model: User }]
+            include: [
+              {
+                model: User,
+                attributes: { exclude: ['password'] }
+              }
+            ]
           }
         ]
       },
@@ -111,8 +117,8 @@ exports.loginUser = catchAsync(async (req, res, next) => {
 
   // Create JWT
   const token = await jwt.sign(
-    { id: user.id },
-    process.env.JWT_SECRET,
+    { id: user.id }, // Token payload
+    process.env.JWT_SECRET, // Secret key
     {
       expiresIn: process.env.JWT_EXPIRES_IN
     }
@@ -123,8 +129,3 @@ exports.loginUser = catchAsync(async (req, res, next) => {
     data: { token }
   });
 });
-
-// Generate credential that validates user session (token)
-// 1. Validate session
-// 2. Grant access a certain parts of our API
-// 3. Restrict access

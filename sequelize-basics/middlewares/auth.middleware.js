@@ -2,6 +2,9 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const { promisify } = require('util');
 
+// Models
+const { User } = require('../models/user.model');
+
 // Utils
 const { AppError } = require('../util/appError');
 const { catchAsync } = require('../util/catchAsync');
@@ -22,20 +25,29 @@ exports.validateSession = catchAsync(
     }
 
     if (!token) {
-      return next(new AppError(400, 'Invalid session'));
+      return next(new AppError(401, 'Invalid session'));
     }
 
     // Verify that token is still valid
-    const validToken = await promisify(jwt.verify)(
+    const decodedToken = await promisify(jwt.verify)(
       token,
       process.env.JWT_SECRET
     );
 
-    if (!validToken) {
+    // Validate that the id the token contains belongs to a valid user
+    // SELECT id, email FROM users;
+    const user = await User.findOne({
+      where: { id: decodedToken.id, status: 'active' },
+      attributes: {
+        exclude: ['password']
+      }
+    });
+
+    if (!user) {
       return next(new AppError(401, 'Invalid session'));
     }
 
-    // Validate that the id the token contains belongs to a valid user
+    console.log(user);
 
     // Grant access
     next();

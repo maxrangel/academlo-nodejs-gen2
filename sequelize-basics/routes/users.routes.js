@@ -19,7 +19,7 @@ router.get('/', validateSession, getAllUsers);
 
 router.get('/:id', validateSession, getUserById);
 
-router.post('/', validateSession, createNewUser);
+router.post('/', createNewUser);
 
 router.post('/login', loginUser);
 

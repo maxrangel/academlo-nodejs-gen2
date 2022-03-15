@@ -10,7 +10,9 @@ const { AppError } = require('../util/appError');
 // export const getAllPosts
 exports.getAllPosts = catchAsync(async (req, res, next) => {
   // SELECT * FROM posts WHERE status = 'active'; -> posts[]
-  const posts = await Post.findAll({ where: { status: 'active' } });
+  const posts = await Post.findAll({
+    where: { status: 'active' }
+  });
 
   res.status(200).json({
     status: 'success',
@@ -30,7 +32,9 @@ exports.getPostById = catchAsync(async (req, res, next) => {
   });
 
   if (!post) {
-    return next(new AppError(404, 'No post found with the given ID'));
+    return next(
+      new AppError(404, 'No post found with the given ID')
+    );
   }
 
   res.status(200).json({
@@ -47,7 +51,10 @@ exports.createPost = catchAsync(async (req, res, next) => {
 
   if (!title || !content || !userId) {
     return next(
-      new AppError(400, 'Must provide a valid title, content and userId')
+      new AppError(
+        400,
+        'Must provide a valid title, content and userId'
+      )
     );
   }
 
@@ -65,57 +72,65 @@ exports.createPost = catchAsync(async (req, res, next) => {
 });
 
 // Update post (put)
-exports.updatePostPut = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { title, content, author } = req.body;
+exports.updatePostPut = catchAsync(
+  async (req, res, necxt) => {
+    try {
+      const { id } = req.params;
+      const { title, content, author } = req.body;
 
-    // Validate the data has some value
-    if (
-      !title ||
-      !content ||
-      !author ||
-      title.length === 0 ||
-      content.length === 0 ||
-      author.length === 0
-    ) {
-      res.status(400).json({
-        status: 'error',
-        message: 'Must provide a title, content and the author for this request'
+      // Validate the data has some value
+      if (
+        !title ||
+        !content ||
+        !author ||
+        title.length === 0 ||
+        content.length === 0 ||
+        author.length === 0
+      ) {
+        res.status(400).json({
+          status: 'error',
+          message:
+            'Must provide a title, content and the author for this request'
+        });
+        return;
+      }
+
+      const post = await Post.findOne({
+        where: { id: id, status: 'active' }
       });
-      return;
-    }
 
-    const post = await Post.findOne({
-      where: { id: id, status: 'active' }
-    });
+      if (!post) {
+        res.status(404).json({
+          status: 'error',
+          message: 'Cant update post, invalid ID'
+        });
+        return;
+      }
 
-    if (!post) {
-      res.status(404).json({
-        status: 'error',
-        message: 'Cant update post, invalid ID'
+      await post.update({
+        title: title,
+        content: content,
+        author: author
       });
-      return;
+
+      // 204 - No content
+      res.status(204).json({ status: 'success' });
+    } catch (error) {
+      console.log(error);
     }
-
-    await post.update({
-      title: title,
-      content: content,
-      author: author
-    });
-
-    // 204 - No content
-    res.status(204).json({ status: 'success' });
-  } catch (error) {
-    console.log(error);
   }
-};
+);
 
 // Update post (patch)
 exports.updatePostPatch = async (req, res) => {
   try {
     const { id } = req.params;
-    const data = filterObj(req.body, 'title', 'content', 'author'); // { title } | { title, author } | { content }
+    const data = filterObj(
+      req.body,
+      'title',
+      'content',
+      'author'
+    ); // { title } | { title, author } | { content }
 
     const post = await Post.findOne({
       where: { id: id, status: 'active' }
