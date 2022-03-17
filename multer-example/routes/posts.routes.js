@@ -3,13 +3,16 @@ const express = require('express');
 // Controllers
 // import { getAllPosts } from '../controllers/posts.controller'
 const {
-	getAllPosts,
-	getPostById,
-	createPost,
-	updatePostPut,
-	updatePostPatch,
-	deletePost,
+  getAllPosts,
+  getPostById,
+  createPost,
+  updatePostPut,
+  updatePostPatch,
+  deletePost
 } = require('../controllers/posts.controller');
+
+// Utils
+const { upload } = require('../util/multer');
 
 const router = express.Router();
 
@@ -19,7 +22,7 @@ router.get('/', getAllPosts);
 router.get('/:id', getPostById);
 
 // POST http://localhost:4000/posts
-router.post('/', createPost);
+router.post('/', upload.single('postImg'), createPost);
 
 // PUT http://localhost:4000/posts/:id
 router.put('/:id', updatePostPut);

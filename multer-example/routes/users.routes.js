@@ -9,9 +9,7 @@ const {
 } = require('../controllers/users.controller');
 
 // Middlewares
-const {
-  validateSession
-} = require('../middlewares/auth.middleware');
+const { validateSession } = require('../middlewares/auth.middleware');
 
 const router = express.Router();
 
