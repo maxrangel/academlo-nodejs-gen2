@@ -1,3 +1,5 @@
+const { ref, uploadBytes } = require('firebase/storage');
+
 // Models
 const { Post } = require('../models/post.model');
 
@@ -5,6 +7,7 @@ const { Post } = require('../models/post.model');
 const { filterObj } = require('../util/filterObj');
 const { catchAsync } = require('../util/catchAsync');
 const { AppError } = require('../util/appError');
+const { storage } = require('../util/firebase');
 
 // Get all posts
 // export const getAllPosts
@@ -47,20 +50,23 @@ exports.getPostById = catchAsync(async (req, res, next) => {
 exports.createPost = catchAsync(async (req, res, next) => {
   const { title, content, userId } = req.body;
 
-  console.table(req.file);
-
   if (!title || !content || !userId) {
     return next(
       new AppError(400, 'Must provide a valid title, content and userId')
     );
   }
 
+  // Upload img to Cloud Storage (Firebase)
+  const imgRef = ref(storage, `imgs/${Date.now()}-${req.file.originalname}`);
+
+  const result = await uploadBytes(imgRef, req.file.buffer);
+
   // INSERT INTO posts (title, content, userId) VALUES ('A new post', 'Saved in db', 1)
   const newPost = await Post.create({
     title: title, // dbColumn: valueToInsert
     content: content,
     userId: userId,
-    imgUrl: req.file.path
+    imgUrl: result.metadata.fullPath
   });
 
   res.status(201).json({
