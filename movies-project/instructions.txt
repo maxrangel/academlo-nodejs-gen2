@@ -17,7 +17,7 @@ Objective: Prepare the routers and controllers functions
   b) For PATCH and DELETE, must provide an id
 
 2. Create actors controller file, with the following functions
-  a) getAllActors
+  a) getAllActors, getActorById
   b) createNewActor
   c) updateActor
   d) deleteActor
@@ -27,3 +27,19 @@ Objective: Prepare the routers and controllers functions
 3. Pass the newly created functions to their respective endpoint of their router
 
 4. Do step 1, 2, and 3 but for movies and users
+
+Activity #3:
+
+Objective: Create CRUD controller functions for actors
+  a) Create a function to insert a new actor in the database
+  b) Create a function to get all actors
+  c) Create a function to get actor by id
+  d) Create a function to update an actor by id (name, country, age)
+  e) Create a function that disables the actor (delete) by id
+
+  Same for users and movies
+
+  NOTE: Image uploading is not necessary but an extra
+  NOTE: Password must be encrypted for users
+  NOTE: Update user fields (username, email)
+  NOTE: Update movie fields (title, description, duration, genre)
