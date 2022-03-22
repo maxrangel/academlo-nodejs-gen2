@@ -1,0 +1,13 @@
+.header {
+	text-align: center;
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.switch-button {
+	width: 60%;
+}

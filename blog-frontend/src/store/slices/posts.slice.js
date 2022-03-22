@@ -8,10 +8,15 @@ const postsSlice = createSlice({
 	name: 'posts',
 	initialState,
 	reducers: {
-		getPosts: (state, action) => {},
-		addPost: state => {},
-		editPost: (state, action) => {},
-		deletePost: (state, action) => {},
+		getPosts: (state, action) => {
+			state.posts = action.payload.posts;
+		},
+		addPost: (state, action) => {
+			const { newPost } = action.payload;
+			const updatedPosts = state.posts.concat(newPost);
+
+			state.posts = updatedPosts;
+		},
 	},
 });
 

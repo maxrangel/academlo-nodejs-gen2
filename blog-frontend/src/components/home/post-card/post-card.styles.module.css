@@ -1,0 +1,11 @@
+.expand-icon {
+	margin-left: auto;
+}
+
+.expand-icon--hide {
+	transform: rotate(0deg);
+}
+
+.expand-icon--show {
+	transform: rotate(180deg);
+}
