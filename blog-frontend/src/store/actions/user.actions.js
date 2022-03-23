@@ -5,7 +5,16 @@ import { userActions } from '../slices/user.slice';
 export const login = (email, password) => {
 	return async dispatch => {
 		try {
-			dispatch(userActions.login({ token: '' }));
+			const res = await axios.post('http://localhost:4000/api/v1/users/login', {
+				email,
+				password,
+			});
+
+			const { token } = res.data.data;
+
+			sessionStorage.setItem('token', token);
+
+			dispatch(userActions.login({ token }));
 		} catch (error) {
 			console.log(error);
 		}

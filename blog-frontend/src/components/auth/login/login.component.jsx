@@ -1,4 +1,8 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+
+// Redux actions
+import { login } from '../../../store/actions/user.actions';
 
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -10,8 +14,12 @@ const Login = () => {
 	const [emailInput, setEmailInput] = useState('');
 	const [passwordInput, setPasswordInput] = useState('');
 
+	const dispatch = useDispatch();
+
 	const onSubmitHandler = e => {
 		e.preventDefault();
+
+		dispatch(login(emailInput, passwordInput));
 	};
 
 	const emailInputHandler = e => {
