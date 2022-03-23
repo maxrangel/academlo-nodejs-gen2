@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { ref, getDownloadURL } from 'firebase/storage';
+
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
@@ -14,26 +16,38 @@ import Button from '@mui/material/Button';
 // Components
 import Comment from '../comment/comment.component';
 
+// Utils
+import { storage } from '../../../utils/firebase';
+
 import classes from './post-card.styles.module.css';
 
-const PostCard = () => {
+const PostCard = ({ post }) => {
 	const [expanded, setExpanded] = useState(false);
+	const [imgUrl, setImgUrl] = useState('');
 
 	const handleExpandClick = () => {
 		setExpanded(!expanded);
 	};
+
+	useEffect(() => {
+		const downloadImg = async () => {
+			const imgRef = ref(storage, post.imgUrl);
+
+			const imgUrl = await getDownloadURL(imgRef);
+
+			setImgUrl(imgUrl);
+		};
+
+		downloadImg();
+	}, [post.imgUrl]);
+
 	return (
 		<Card className={classes['card']}>
 			<CardHeader
 				title="Title of the post"
 				subheader="Author: September 14, 2016"
 			/>
-			<CardMedia
-				component="img"
-				height="194"
-				image="https://www.collinsdictionary.com/images/full/book_181404689_1000.jpg"
-				alt="Post img"
-			/>
+			<CardMedia component="img" height="194" image={imgUrl} alt="Post img" />
 			<CardContent>
 				<Typography variant="body2" color="text.secondary">
 					Post description
