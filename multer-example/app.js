@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 
 // Controllers
 const { globalErrorHandler } = require('./controllers/error.controller');
@@ -19,6 +20,9 @@ app.use(express.json());
 
 // Enable multipart/form-data incoming data (to receive files)
 app.use(express.urlencoded({ extended: true }));
+
+// Enable cors
+app.use('*', cors());
 
 // Endpoints
 app.use('/api/v1/posts', postsRouter);

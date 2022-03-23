@@ -13,12 +13,14 @@ const { validateSession } = require('../middlewares/auth.middleware');
 
 const router = express.Router();
 
-router.get('/', validateSession, getAllUsers);
-
-router.get('/:id', validateSession, getUserById);
-
 router.post('/', createNewUser);
 
 router.post('/login', loginUser);
+
+router.use(validateSession);
+
+router.get('/', getAllUsers);
+
+router.get('/:id', getUserById);
 
 module.exports = { usersRouter: router };
