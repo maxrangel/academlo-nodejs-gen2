@@ -15,9 +15,15 @@ export const login = (email, password) => {
 export const signup = userData => {
 	return async dispatch => {
 		try {
-			dispatch(userActions.signup({ userData }));
+			const res = await axios.post('http://localhost:4000/api/v1/users', {
+				...userData,
+			});
+
+			console.log(res.data);
+
+			dispatch(userActions.signup());
 		} catch (error) {
-			console.log(error);
+			console.log(error.error);
 		}
 	};
 };
