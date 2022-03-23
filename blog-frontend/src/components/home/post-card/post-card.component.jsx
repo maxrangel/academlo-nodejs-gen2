@@ -8,6 +8,8 @@ import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Input from '@mui/material/Input';
+import Button from '@mui/material/Button';
 
 // Components
 import Comment from '../comment/comment.component';
@@ -21,7 +23,7 @@ const PostCard = () => {
 		setExpanded(!expanded);
 	};
 	return (
-		<Card sx={{ maxWidth: 345 }}>
+		<Card className={classes['card']}>
 			<CardHeader
 				title="Title of the post"
 				subheader="Author: September 14, 2016"
@@ -56,9 +58,13 @@ const PostCard = () => {
 					<ExpandMoreIcon />
 				</IconButton>
 			</CardActions>
+			{/* Comments section */}
 			<Collapse in={expanded} timeout="auto" unmountOnExit>
 				<CardContent>
-					{/* Comments section */}
+					<div className={classes['comment__input-container']}>
+						<Input placeholder="Your comment" />
+						<Button>Submit</Button>
+					</div>
 					<Comment />
 					<Comment />
 					<Comment />

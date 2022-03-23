@@ -1,3 +1,8 @@
+.card {
+	width: 300px;
+	margin: 0 auto;
+}
+
 .expand-icon {
 	margin-left: auto;
 }
@@ -8,4 +13,12 @@
 
 .expand-icon--show {
 	transform: rotate(180deg);
+}
+
+.comment__input-container {
+	display: flex;
+	flex-direction: row;
+
+	border: 1px solid #ece9e9;
+	padding: 2px 5px;
 }

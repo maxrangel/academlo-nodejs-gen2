@@ -23,13 +23,13 @@ const AddPage = () => {
 
 			<form className={classes.form}>
 				<TextField
-					ref={titleInputRef}
+					inputRef={titleInputRef}
 					id="outlined-basic"
 					label="Title"
 					variant="outlined"
 				/>
 				<TextField
-					ref={contentInputRef}
+					inputRef={contentInputRef}
 					id="outlined-basic"
 					label="Content"
 					variant="outlined"
