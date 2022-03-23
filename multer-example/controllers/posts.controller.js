@@ -48,12 +48,10 @@ exports.getPostById = catchAsync(async (req, res, next) => {
 
 // Save post to database
 exports.createPost = catchAsync(async (req, res, next) => {
-  const { title, content, userId } = req.body;
+  const { title, content } = req.body;
 
-  if (!title || !content || !userId) {
-    return next(
-      new AppError(400, 'Must provide a valid title, content and userId')
-    );
+  if (!title || !content) {
+    return next(new AppError(400, 'Must provide a valid title and content'));
   }
 
   // Upload img to Cloud Storage (Firebase)
@@ -65,7 +63,7 @@ exports.createPost = catchAsync(async (req, res, next) => {
   const newPost = await Post.create({
     title: title, // dbColumn: valueToInsert
     content: content,
-    userId: userId,
+    userId: req.currentUser.id,
     imgUrl: result.metadata.fullPath
   });
 
