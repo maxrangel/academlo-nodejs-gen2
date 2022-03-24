@@ -1,7 +1,9 @@
-const { ref, uploadBytes } = require('firebase/storage');
+const { ref, uploadBytes, getDownloadURL } = require('firebase/storage');
 
 // Models
 const { Post } = require('../models/post.model');
+const { User } = require('../models/user.model');
+const { Comment } = require('../models/comment.model');
 
 // Utils
 const { filterObj } = require('../util/filterObj');
@@ -14,13 +16,51 @@ const { storage } = require('../util/firebase');
 exports.getAllPosts = catchAsync(async (req, res, next) => {
   // SELECT * FROM posts WHERE status = 'active'; -> posts[]
   const posts = await Post.findAll({
-    where: { status: 'active' }
+    where: { status: 'active' },
+    include: [
+      { model: User, attributes: { exclude: ['password'] } },
+      {
+        model: Comment,
+        include: [{ model: User, attributes: { exclude: ['password'] } }]
+      }
+    ]
   });
+
+  // Promise[]
+  const postsPromises = posts.map(
+    async ({
+      id,
+      title,
+      content,
+      imgUrl,
+      createdAt,
+      updatedAt,
+      user,
+      comments
+    }) => {
+      const imgRef = ref(storage, imgUrl);
+
+      const imgDownloadUrl = await getDownloadURL(imgRef);
+
+      return {
+        id,
+        title,
+        content,
+        imgUrl: imgDownloadUrl,
+        user,
+        comments,
+        createdAt,
+        updatedAt
+      };
+    }
+  );
+
+  const resolvedPosts = await Promise.all(postsPromises);
 
   res.status(200).json({
     status: 'success',
     data: {
-      posts
+      posts: resolvedPosts
     }
   });
 });

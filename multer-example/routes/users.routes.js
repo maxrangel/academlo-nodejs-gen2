@@ -5,7 +5,8 @@ const {
   getAllUsers,
   getUserById,
   createNewUser,
-  loginUser
+  loginUser,
+  checkToken
 } = require('../controllers/users.controller');
 
 // Middlewares
@@ -20,6 +21,8 @@ router.post('/login', loginUser);
 router.use(validateSession);
 
 router.get('/', getAllUsers);
+
+router.get('/check-token', checkToken);
 
 router.get('/:id', getUserById);
 

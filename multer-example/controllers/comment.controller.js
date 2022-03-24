@@ -48,12 +48,13 @@ exports.getCommentById = async (req, res) => {
 
 exports.createComment = async (req, res) => {
   try {
-    const { text, postId, userId } = req.body;
+    const { id } = req.currentUser;
+    const { text, postId } = req.body;
 
-    if (!text || !postId || !userId) {
+    if (!text || !postId) {
       res.status(400).json({
         status: 'error',
-        message: 'Must provide text, postId and userId'
+        message: 'Must provide text, postId'
       });
       return;
     }
@@ -61,7 +62,7 @@ exports.createComment = async (req, res) => {
     const newComment = await Comment.create({
       text,
       postId,
-      userId
+      userId: id
     });
 
     res.status(201).json({
