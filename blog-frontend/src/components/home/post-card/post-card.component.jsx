@@ -16,7 +16,7 @@ import Comment from '../comment/comment.component';
 
 import classes from './post-card.styles.module.css';
 
-const PostCard = () => {
+const PostCard = ({ post }) => {
 	const [expanded, setExpanded] = useState(false);
 
 	const handleExpandClick = () => {
@@ -25,18 +25,18 @@ const PostCard = () => {
 	return (
 		<Card className={classes['card']}>
 			<CardHeader
-				title="Title of the post"
-				subheader="Author: September 14, 2016"
+				title={post.title}
+				subheader={`${post.user.name}: September 14, 2016`}
 			/>
 			<CardMedia
 				component="img"
 				height="194"
-				image="https://www.collinsdictionary.com/images/full/book_181404689_1000.jpg"
+				image={post.imgUrl}
 				alt="Post img"
 			/>
 			<CardContent>
 				<Typography variant="body2" color="text.secondary">
-					Post description
+					{post.content}
 				</Typography>
 			</CardContent>
 			<CardActions disableSpacing>
@@ -65,9 +65,10 @@ const PostCard = () => {
 						<Input placeholder="Your comment" />
 						<Button>Submit</Button>
 					</div>
-					<Comment />
-					<Comment />
-					<Comment />
+
+					{post.comments.map(comment => {
+						return <Comment key={comment.id} comment={comment} />;
+					})}
 				</CardContent>
 			</Collapse>
 		</Card>

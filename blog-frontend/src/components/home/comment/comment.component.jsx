@@ -1,11 +1,11 @@
 import { Fragment } from 'react';
 import Typography from '@mui/material/Typography';
 
-const Comment = () => {
+const Comment = ({ comment }) => {
 	return (
 		<Fragment>
 			<Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-				Author says: Your comment
+				{`${comment.user.name} says: ${comment.text}`}
 			</Typography>
 		</Fragment>
 	);

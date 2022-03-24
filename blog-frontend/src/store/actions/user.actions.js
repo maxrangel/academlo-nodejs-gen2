@@ -38,10 +38,19 @@ export const signup = userData => {
 };
 
 export const checkUserAuth = () => {
-	return dispatch => {
-		const token = sessionStorage.getItem('token');
+	return async dispatch => {
+		try {
+			const token = sessionStorage.getItem('token');
 
-		dispatch(userActions.checkAuth({ userAuth: !!token, token }));
+			await axios.get('http://localhost:4000/api/v1/users/check-token', {
+				headers: { Authorization: `Bearer ${token}` },
+			});
+
+			dispatch(userActions.checkAuth({ userAuth: true, token }));
+		} catch (error) {
+			console.log(error);
+			dispatch(userActions.checkAuth({ userAuth: false, token: null }));
+		}
 	};
 };
 

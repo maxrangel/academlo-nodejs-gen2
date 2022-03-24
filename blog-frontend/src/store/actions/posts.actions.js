@@ -5,9 +5,17 @@ import { postsActions } from '../slices/posts.slice';
 export const fetchPosts = () => {
 	return async dispatch => {
 		try {
-			const response = await axios.get(`http://localhost:4000/api/v1/posts`);
+			const token = sessionStorage.getItem('token');
+
+			const response = await axios.get(`http://localhost:4000/api/v1/posts`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
 
 			const { posts } = response.data.data;
+
+			console.log(posts);
 
 			dispatch(postsActions.getPosts({ posts }));
 		} catch (error) {
@@ -19,9 +27,13 @@ export const fetchPosts = () => {
 export const addPost = postData => {
 	return async dispatch => {
 		try {
-			const response = await axios.post(`http://localhost:4000/api/v1/posts`, {
+			const token = sessionStorage.getItem('token');
+
+			const response = await axios.post(
+				`http://localhost:4000/api/v1/posts`,
 				postData,
-			});
+				{ headers: { Authorization: `Bearer ${token}` } }
+			);
 
 			const { newPost } = response.data.data;
 
