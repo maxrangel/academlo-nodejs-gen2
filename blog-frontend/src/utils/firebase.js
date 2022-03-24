@@ -11,8 +11,6 @@ const firebaseConfig = {
 	measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
-console.log(firebaseConfig);
-
 const firebaseApp = initializeApp(firebaseConfig);
 
 export const storage = getStorage(firebaseApp);
