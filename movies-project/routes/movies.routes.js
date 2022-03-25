@@ -9,13 +9,31 @@ const {
   deleteMovie
 } = require('../controllers/movies.controller');
 
+// Middlewares
+const {
+  validateSession,
+  protectAdmin
+} = require('../middlewares/auth.middleware');
+
+const { movieExists } = require('../middlewares/movies.middleware');
+
 // Utils
 const { upload } = require('../util/multer');
 
 const router = express.Router();
 
-router.route('/').get(getAllMovies).post(upload.single('img'), createMovie);
+router.use(validateSession);
 
-router.route('/:id').get(getMovieById).patch(updateMovie).delete(deleteMovie);
+router
+  .route('/')
+  .get(getAllMovies)
+  .post(protectAdmin, upload.single('img'), createMovie);
+
+router
+  .use('/:id', movieExists)
+  .route('/:id')
+  .get(getMovieById)
+  .patch(protectAdmin, updateMovie)
+  .delete(protectAdmin, deleteMovie);
 
 module.exports = { moviesRouter: router };
