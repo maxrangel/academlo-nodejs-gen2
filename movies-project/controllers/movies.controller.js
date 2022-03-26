@@ -1,7 +1,9 @@
 const { ref, uploadBytes, getDownloadURL } = require('firebase/storage');
+const { validationResult } = require('express-validator');
 
 // Models
 const { Movie } = require('../models/movie.model');
+const { Actor } = require('../models/actor.model');
 const { ActorInMovie } = require('../models/actorInMovie.model');
 
 // Utils
@@ -11,7 +13,10 @@ const { filterObj } = require('../util/filterObj');
 const { storage } = require('../util/firebase');
 
 exports.getAllMovies = catchAsync(async (req, res, next) => {
-  const movies = await Movie.findAll({ where: { status: 'active' } });
+  const movies = await Movie.findAll({
+    where: { status: 'active' },
+    include: [{ model: Actor }]
+  });
 
   res.status(200).json({
     status: 'success',
@@ -30,6 +35,16 @@ exports.getMovieById = catchAsync(async (req, res, next) => {
 
 exports.createMovie = catchAsync(async (req, res, next) => {
   const { title, description, duration, rating, genre, actors } = req.body;
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const errorMsg = errors
+      .array()
+      .map(({ msg }) => msg)
+      .join('. ');
+    return next(new AppError(400, errorMsg));
+  }
 
   // Upload img to firebase
   const fileExtension = req.file.originalname.split('.')[1];

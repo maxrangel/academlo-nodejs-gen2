@@ -1,4 +1,5 @@
 const { ref, uploadBytes, getDownloadURL } = require('firebase/storage');
+const { validationResult } = require('express-validator');
 
 // Models
 const { Actor } = require('../models/actor.model');
@@ -9,9 +10,13 @@ const { catchAsync } = require('../util/catchAsync');
 const { AppError } = require('../util/appError');
 const { filterObj } = require('../util/filterObj');
 const { storage } = require('../util/firebase');
+const { Movie } = require('../models/movie.model');
 
 exports.getAllActors = catchAsync(async (req, res, next) => {
-  const actors = await Actor.findAll({ where: { status: 'active' } });
+  const actors = await Actor.findAll({
+    where: { status: 'active' },
+    include: [{ model: Movie, through: ActorInMovie }]
+  });
 
   res.status(200).json({
     status: 'success',
@@ -31,12 +36,25 @@ exports.getActorById = catchAsync(async (req, res, next) => {
 exports.createActor = catchAsync(async (req, res, next) => {
   const { name, country, rating, age } = req.body;
 
+  // Validate req.body
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    // [msg, msg, msg, msg] -> msg. msg. msg...
+    const errorMsg = errors
+      .array()
+      .map(({ msg }) => msg)
+      .join('. ');
+
+    return next(new AppError(400, errorMsg));
+  }
+
   // Upload img to firebase
   const fileExtension = req.file.originalname.split('.')[1];
 
   const imgRef = ref(
     storage,
-    `imgs/movies/${name}-${Date.now()}.${fileExtension}`
+    `imgs/actors/${name}-${Date.now()}.${fileExtension}`
   );
 
   const imgUploaded = await uploadBytes(imgRef, req.file.buffer);
