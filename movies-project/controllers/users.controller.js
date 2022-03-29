@@ -9,6 +9,7 @@ const { User } = require('../models/user.model');
 const { catchAsync } = require('../util/catchAsync');
 const { AppError } = require('../util/appError');
 const { filterObj } = require('../util/filterObj');
+const { Email } = require('../util/email');
 
 dotenv.config({ path: './config.env' });
 
@@ -69,6 +70,9 @@ exports.createUser = catchAsync(async (req, res, next) => {
   });
 
   newUser.password = undefined;
+
+  // Send mail to newly created account
+  await new Email(email).send();
 
   res.status(201).json({
     status: 'success',

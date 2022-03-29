@@ -1,0 +1,62 @@
+doctype html
+html
+  head
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(http-equiv="Content-Type", content="text/html; charset=UTF-8")
+    title Simple Transactional Email
+    include styles
+  body
+    span.preheader
+      | This is preheader text. Some clients will show this text as a
+      | preview.
+    table.body(role="presentation", border="0", cellpadding="0", cellspacing="0")
+      tr
+        td &amp;nbsp;
+        td.container
+          .content
+            // START CENTERED WHITE CONTAINER
+            table.main(role="presentation")
+              // START MAIN CONTENT AREA
+              tr
+                td.wrapper
+                  table(role="presentation", border="0", cellpadding="0", cellspacing="0")
+                    tr
+                      td
+                        p Hi there,
+                        p
+                          | Sometimes you just want to send a simple HTML email
+                          | with a simple design and clear call to action. This is
+                          | it.
+                        table.btn.btn-primary(role="presentation", border="0", cellpadding="0", cellspacing="0")
+                          tbody
+                            tr
+                              td(align="left")
+                                table(role="presentation", border="0", cellpadding="0", cellspacing="0")
+                                  tbody
+                                    tr
+                                      td
+                                        a(href="http://htmlemail.io", target="_blank") Call To Action
+                        p
+                          | This is a really simple email template. Its sole
+                          | purpose is to get the recipient to click the button
+                          | with no distractions.
+                        p Good luck! Hope it works.
+              // END MAIN CONTENT AREA
+            // END CENTERED WHITE CONTAINER
+            // START FOOTER
+            .footer
+              table(role="presentation", border="0", cellpadding="0", cellspacing="0")
+                tr
+                  td.content-block
+                    span.apple-link Company Inc, 3 Abbey Road, San Francisco CA 94102
+                    br
+                    | Don&apos;t like these emails?
+                    a(href="http://i.imgur.com/CScmqnj.gif") Unsubscribe
+                    | .
+                tr
+                  td.content-block.powered-by
+                    | Powered by
+                    a(href="http://htmlemail.io") HTMLemail
+                    | .
+            // END FOOTER
+        td &amp;nbsp;

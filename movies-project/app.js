@@ -10,6 +10,9 @@ const { moviesRouter } = require('./routes/movies.routes');
 
 const app = express();
 
+// Set Pug as template engine
+app.set('view engine', 'pug');
+
 // Enable incoming JSON data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
