@@ -15,7 +15,7 @@ initModels();
 
 // Database synced with models' relations
 sequelize
-  .sync({ force: true })
+  .sync()
   .then(() => console.log('Database synced'))
   .catch((err) => console.log(err));
 

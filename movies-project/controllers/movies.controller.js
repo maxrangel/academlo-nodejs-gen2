@@ -36,16 +36,6 @@ exports.getMovieById = catchAsync(async (req, res, next) => {
 exports.createMovie = catchAsync(async (req, res, next) => {
   const { title, description, duration, rating, genre, actors } = req.body;
 
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    const errorMsg = errors
-      .array()
-      .map(({ msg }) => msg)
-      .join('. ');
-    return next(new AppError(400, errorMsg));
-  }
-
   // Upload img to firebase
   const fileExtension = req.file.originalname.split('.')[1];
 

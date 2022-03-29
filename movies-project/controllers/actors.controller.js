@@ -15,7 +15,7 @@ const { Movie } = require('../models/movie.model');
 exports.getAllActors = catchAsync(async (req, res, next) => {
   const actors = await Actor.findAll({
     where: { status: 'active' },
-    include: [{ model: Movie, through: ActorInMovie }]
+    include: [{ model: Movie }]
   });
 
   res.status(200).json({
@@ -35,19 +35,6 @@ exports.getActorById = catchAsync(async (req, res, next) => {
 
 exports.createActor = catchAsync(async (req, res, next) => {
   const { name, country, rating, age } = req.body;
-
-  // Validate req.body
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    // [msg, msg, msg, msg] -> msg. msg. msg...
-    const errorMsg = errors
-      .array()
-      .map(({ msg }) => msg)
-      .join('. ');
-
-    return next(new AppError(400, errorMsg));
-  }
 
   // Upload img to firebase
   const fileExtension = req.file.originalname.split('.')[1];
