@@ -28,7 +28,8 @@ class Email {
     await this.newTransport().sendMail({
       from: this.from,
       to: this.emails,
-      html: htmlToText(html),
+      html,
+      text: htmlToText(html),
       subject: 'This is a test email'
     });
   }
