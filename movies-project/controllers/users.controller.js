@@ -72,7 +72,7 @@ exports.createUser = catchAsync(async (req, res, next) => {
   newUser.password = undefined;
 
   // Send mail to newly created account
-  await new Email(email).send();
+  await new Email(email).sendWelcome(username);
 
   res.status(201).json({
     status: 'success',

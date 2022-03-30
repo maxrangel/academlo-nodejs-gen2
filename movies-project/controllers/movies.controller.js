@@ -11,6 +11,7 @@ const { catchAsync } = require('../util/catchAsync');
 const { AppError } = require('../util/appError');
 const { filterObj } = require('../util/filterObj');
 const { storage } = require('../util/firebase');
+const { Email } = require('../util/email');
 
 exports.getAllMovies = catchAsync(async (req, res, next) => {
   const movies = await Movie.findAll({
@@ -61,6 +62,11 @@ exports.createMovie = catchAsync(async (req, res, next) => {
   });
 
   await Promise.all(actorsInMoviesPromises);
+
+  // Get actors for email
+
+  // ! In a real app, we get the subscribed emails of our app and send emails to those emails
+  new Email('max@gmail.com').sendNewMovie(newMovie);
 
   res.status(200).json({
     status: 'success',

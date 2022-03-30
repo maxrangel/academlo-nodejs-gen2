@@ -22,16 +22,27 @@ class Email {
     });
   }
 
-  async send() {
-    const html = pug.renderFile(`${__dirname}/../emails/baseEmail.pug`);
+  async send(template, subject, emailData) {
+    const html = pug.renderFile(
+      `${__dirname}/../emails/${template}.pug`,
+      emailData
+    );
 
     await this.newTransport().sendMail({
       from: this.from,
       to: this.emails,
       html,
       text: htmlToText(html),
-      subject: 'This is a test email'
+      subject
     });
+  }
+
+  async sendWelcome(username) {
+    await this.send('welcome', 'Welcome to Academlo Movies', { username });
+  }
+
+  async sendNewMovie(newMovie) {
+    await this.send('newMovie', 'We have a new movie for you!', { newMovie });
   }
 }
 
