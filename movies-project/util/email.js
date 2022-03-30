@@ -12,6 +12,16 @@ class Email {
   }
 
   newTransport() {
+    if (process.env.NODE_ENV === 'production') {
+      return nodemailer.createTransport({
+        service: 'SendGrid',
+        auth: {
+          user: process.env.SENDGRID_USER,
+          pass: process.env.SENDGRID_PASS
+        }
+      });
+    }
+
     return nodemailer.createTransport({
       host: 'smtp.mailtrap.io',
       port: 2525,
@@ -41,8 +51,11 @@ class Email {
     await this.send('welcome', 'Welcome to Academlo Movies', { username });
   }
 
-  async sendNewMovie(newMovie) {
-    await this.send('newMovie', 'We have a new movie for you!', { newMovie });
+  async sendNewMovie(newMovie, movieActors) {
+    await this.send('newMovie', 'We have a new movie for you!', {
+      newMovie,
+      movieActors
+    });
   }
 }
 

@@ -2,3 +2,9 @@ extends baseEmail
 
 block emailContent 
   p We have #{newMovie.title} available at our cinemas!
+
+  p In this movie, we have actors like: 
+
+  ul 
+    each actor in movieActors
+      li #{actor.name}

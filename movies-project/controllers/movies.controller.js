@@ -1,5 +1,4 @@
-const { ref, uploadBytes, getDownloadURL } = require('firebase/storage');
-const { validationResult } = require('express-validator');
+const { ref, uploadBytes } = require('firebase/storage');
 
 // Models
 const { Movie } = require('../models/movie.model');
@@ -64,9 +63,17 @@ exports.createMovie = catchAsync(async (req, res, next) => {
   await Promise.all(actorsInMoviesPromises);
 
   // Get actors for email
+  const movieActors = await Actor.findAll({
+    include: [
+      {
+        model: Movie,
+        through: { where: { movieId: newMovie.id } }
+      }
+    ]
+  });
 
   // ! In a real app, we get the subscribed emails of our app and send emails to those emails
-  new Email('max@gmail.com').sendNewMovie(newMovie);
+  new Email('max@gmail.com').sendNewMovie(newMovie, movieActors);
 
   res.status(200).json({
     status: 'success',
