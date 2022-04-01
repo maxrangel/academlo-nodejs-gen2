@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 
 // Models
 const { User } = require('../models/user.model');
+const { Product } = require('../models/product.model');
 
 // Utils
 const { catchAsync } = require('../util/catchAsync');
@@ -56,7 +57,7 @@ exports.getUserById = catchAsync(async (req, res, next) => {
 });
 
 exports.createUser = catchAsync(async (req, res, next) => {
-  const { username, email, password, role } = req.body;
+  const { username, email, password } = req.body;
 
   const salt = await bcrypt.genSalt(12);
   const hashedPassword = await bcrypt.hash(password, salt);
@@ -64,8 +65,7 @@ exports.createUser = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     username,
     email,
-    password: hashedPassword,
-    role
+    password: hashedPassword
   });
 
   newUser.password = undefined;
@@ -92,4 +92,17 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
   await user.update({ status: 'deleted' });
 
   res.status(204).json({ status: 'success' });
+});
+
+exports.getUsersProducts = catchAsync(async (req, res, next) => {
+  const { id } = req.currentUser;
+
+  const products = await Product.findAll({
+    where: { userId: id }
+  });
+
+  res.status(200).json({
+    status: 'success',
+    data: { products }
+  });
 });

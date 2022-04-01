@@ -7,11 +7,16 @@ const {
   createUser,
   updateUser,
   deleteUser,
-  loginUser
+  loginUser,
+  getUsersProducts
 } = require('../controllers/users.controller');
 
 // Middlewares
 const { validateSession } = require('../middlewares/auth.middleware');
+const {
+  userExists,
+  protectUserAccount
+} = require('../middlewares/users.middleware');
 
 const router = express.Router();
 
@@ -23,6 +28,13 @@ router.use(validateSession);
 
 router.get('/', getAllUsers);
 
-router.route('/:id').get(getUserById).patch(updateUser).delete(deleteUser);
+router.get('/me', getUsersProducts);
+
+router
+  .use('/:id', userExists)
+  .route('/:id')
+  .get(getUserById)
+  .patch(protectUserAccount, updateUser)
+  .delete(protectUserAccount, deleteUser);
 
 module.exports = { usersRouter: router };
