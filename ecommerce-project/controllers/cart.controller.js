@@ -84,27 +84,14 @@ exports.addProductToCart = catchAsync(async (req, res, next) => {
 });
 
 exports.updateCartProduct = catchAsync(async (req, res, next) => {
-  const { currentUser } = req;
+  const { cart, product } = req;
   const { productId, quantity } = req.body;
 
   // Check if quantity exceeds available amount
-  const product = await Product.findOne({
-    where: { status: 'active', id: productId }
-  });
-
   if (quantity > product.quantity) {
     return next(
       new AppError(400, `This product only has ${product.quantity} items`)
     );
-  }
-
-  // Find user's cart
-  const cart = await Cart.findOne({
-    where: { status: 'active', userId: currentUser.id }
-  });
-
-  if (!cart) {
-    return next(new AppError(400, 'This user does not have a cart yet'));
   }
 
   // Find the product in cart requested
@@ -132,16 +119,8 @@ exports.updateCartProduct = catchAsync(async (req, res, next) => {
 });
 
 exports.removeProductFromCart = catchAsync(async (req, res, next) => {
-  const { currentUser } = req;
+  const { cart } = req;
   const { productId } = req.params;
-
-  const cart = await Cart.findOne({
-    where: { status: 'active', userId: currentUser.id }
-  });
-
-  if (!cart) {
-    return next(new AppError(404, 'This user does not have a cart yet'));
-  }
 
   const productInCart = await ProductInCart.findOne({
     where: { status: 'active', cartId: cart.id, productId }
@@ -157,22 +136,7 @@ exports.removeProductFromCart = catchAsync(async (req, res, next) => {
 });
 
 exports.purchaseCart = catchAsync(async (req, res, next) => {
-  const { currentUser } = req;
-
-  // Find user's cart
-  const cart = await Cart.findOne({
-    where: { status: 'active', userId: currentUser.id },
-    include: [
-      {
-        model: Product,
-        through: { where: { status: 'active' } }
-      }
-    ]
-  });
-
-  if (!cart) {
-    return next(new AppError(404, 'This user does not have a cart yet'));
-  }
+  const { currentUser, cart } = req;
 
   let totalPrice = 0;
 

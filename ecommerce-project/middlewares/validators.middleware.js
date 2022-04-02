@@ -31,7 +31,7 @@ exports.createProductValidations = [
 // END: Products validations
 
 // Cart validations
-exports.addProductToCartValidation = [
+exports.productInCartValidation = [
   body('productId')
     .isNumeric()
     .withMessage('Product id must be a number')

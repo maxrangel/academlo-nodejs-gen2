@@ -12,9 +12,11 @@ const {
 // Middleware
 const { validateSession } = require('../middlewares/auth.middleware');
 const {
-  addProductToCartValidation,
+  productInCartValidation,
   validateResult
 } = require('../middlewares/validators.middleware');
+const { cartExists } = require('../middlewares/cart.middleware');
+const { productExists } = require('../middlewares/products.middleware');
 
 const router = express.Router();
 
@@ -24,15 +26,22 @@ router.get('/', getUserCart);
 
 router.post(
   '/add-product',
-  addProductToCartValidation,
+  productInCartValidation,
   validateResult,
   addProductToCart
 );
 
-router.patch('/update-product', updateCartProduct);
+router.patch(
+  '/update-product',
+  productInCartValidation,
+  validateResult,
+  productExists,
+  cartExists,
+  updateCartProduct
+);
 
-router.post('/purchase', purchaseCart);
+router.post('/purchase', cartExists, purchaseCart);
 
-router.delete('/:productId', removeProductFromCart);
+router.delete('/:productId', cartExists, removeProductFromCart);
 
 module.exports = { cartRouter: router };
