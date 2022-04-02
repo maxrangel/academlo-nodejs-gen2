@@ -27,33 +27,14 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
   });
 
   // Promise[]
-  const postsPromises = posts.map(
-    async ({
-      id,
-      title,
-      content,
-      imgUrl,
-      createdAt,
-      updatedAt,
-      user,
-      comments
-    }) => {
-      const imgRef = ref(storage, imgUrl);
+  const postsPromises = posts.map(async (post) => {
+    const imgRef = ref(storage, post.imgUrl);
 
-      const imgDownloadUrl = await getDownloadURL(imgRef);
+    const imgDownloadUrl = await getDownloadURL(imgRef);
 
-      return {
-        id,
-        title,
-        content,
-        imgUrl: imgDownloadUrl,
-        user,
-        comments,
-        createdAt,
-        updatedAt
-      };
-    }
-  );
+    post.imgUrl = imgDownloadUrl;
+    return post;
+  });
 
   const resolvedPosts = await Promise.all(postsPromises);
 

@@ -21,22 +21,14 @@ const router = express.Router();
 
 router.use(validateSession);
 
-router.get('/', getAllPosts);
+router.route('/').get(getAllPosts).post(upload.single('postImg'), createPost);
 
-// GET http://localhost:4000/posts/:id
-router.get('/:id', getPostById);
-
-// POST http://localhost:4000/posts
-router.post('/', upload.single('postImg'), createPost);
-
-// PUT http://localhost:4000/posts/:id
-router.put('/:id', updatePostPut);
-
-// PATCH http://localhost:4000/posts/:id
-router.patch('/:id', updatePostPatch);
-
-// DELETE http://localhost:4000/posts/:id
-router.delete('/:id', deletePost);
+router
+  .route('/:id')
+  .get(getPostById)
+  .put(updatePostPut)
+  .patch(updatePostPatch)
+  .delete(deletePost);
 
 module.exports = { postsRouter: router };
 // module.exports = router // export default router
