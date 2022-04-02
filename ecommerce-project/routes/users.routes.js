@@ -8,7 +8,9 @@ const {
   updateUser,
   deleteUser,
   loginUser,
-  getUsersProducts
+  getUsersProducts,
+  getUsersOrders,
+  getOrderById
 } = require('../controllers/users.controller');
 
 // Middlewares
@@ -29,6 +31,10 @@ router.use(validateSession);
 router.get('/', getAllUsers);
 
 router.get('/me', getUsersProducts);
+
+router.get('/orders', getUsersOrders);
+
+router.get('/orders/:id', getOrderById);
 
 router
   .use('/:id', userExists)
